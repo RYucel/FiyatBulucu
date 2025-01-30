@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ürün Fiyat Hesaplayıcı</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+             width: fit-content;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+         .clear-button {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+          display: inline-block;
+        }
+        .clear-button:hover {
+             background-color: #c9302c;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            margin: 20px auto;
+            gap: 10px;
+        }
+         form >div{
+            display: flex;
+             gap: 10px;
+             align-items: center;
+         }
+        label {
+            font-weight: bold;
+              width: 100px
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+             flex: 1;
+             font-size: 16px;
+
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+         li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+         .cheapest {
+            color: green;
+            font-weight: bold;
+
+        }
+        .most-expensive {
+           color: red;
+            font-weight: bold;
+        }
+         .highlight {
+            background-color: #f0f0f0;
+        }
+         .product-details {
+            flex:1;
+          }
+          .unit-price{
+            margin-left: 10px;
+            white-space: nowrap;
+          }
+          .original-values {
+            font-size: 0.8em;
+            color: #777;
+          }
+         .product-name{
+           font-size: 1.1em;
+           font-weight: bold;
+         }
+
+    </style>
+</head>
+<body>
+  <div class="container">
+       <form method="post" action="/clear">
+           <button class="clear-button" type="submit">Veriyi Temizle</button>
+       </form>
+
+    <h1>Ürün Fiyat Hesaplayıcı</h1>
+    <form method="post">
+      <div>
+        <label>Ürün Adı:</label>
+        <input type="text" name="name" required>
+        </div>
+         <div>
+        <label>Fiyat:</label>
+        <input type="number" name="price" step="0.01" required>
+        </div>
+      <div>
+        <label>Miktar:</label>
+         <input type="number" name="quantity" step="0.01" required>
+      </div>
+      <div>
+        <label>Birim:</label>
+        <select name="unit">
+            <option value="gram">Gram</option>
+            <option value="ml">Mililitre</option>
+        </select>
+      </div>
+        <button type="submit">Ürün Ekle</button>
+    </form>
+    <h2>Ürünler:</h2>
+    <ul>
+        {% for product in products %}
+           <li {% if min_product and product == min_product or max_product and product == max_product %} class="highlight" {% endif %}>
+                <div class="product-details">
+                   <span class="product-name">{{ product.name }}</span>
+                   <span class="original-values">({{ product.price }} / {{ product.quantity }} {{product.unit}})</span>
+                   <span class="unit-price"> : {{ "%.2f" | format(product.unit_price) }} /kg/litre</span>
+                 </div>
+                    <div>
+                       {% if min_product and product == min_product %}
+                            <span class="cheapest">(En Ucuz)</span>
+                        {% endif %}
+                         {% if max_product and product == max_product %}
+                           <span class="most-expensive">(En Pahalı)</span>
+                        {% endif %}
+                    </div>
+            </li>
+        {% endfor %}
+    </ul>
+ </div>
+</body>
+</html>
